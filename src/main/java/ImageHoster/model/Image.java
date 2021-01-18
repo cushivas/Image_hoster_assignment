@@ -45,6 +45,19 @@ public class Image {
     @JoinColumn(name = "user_id")
     private User user;
 
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    @OneToMany(mappedBy = "image", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<Comment> comments;
+
+
     //The attribute contains a list of all the tags of an image
     //Note that no column will be generated for this attribute in the database instead a new table will be created
     //Since the mapping is Many to Many, a new table will be generated containing the two columns both referencing to the primary key of both the tables ('images', 'tags')

@@ -45,7 +45,7 @@ public class UserController {
     public String registerUser(User user, Model model) {
         if(this.isValidPassword(user.getPassword())) {
             userService.registerUser(user);
-            return "redirect:/users/login";
+            return "users/login";
         } else {
             user = new User();
             UserProfile profile = new UserProfile();

@@ -1,5 +1,6 @@
 package ImageHoster.controller;
 
+import ImageHoster.model.Comment;
 import ImageHoster.model.Image;
 import ImageHoster.model.Tag;
 import ImageHoster.model.User;
@@ -50,8 +51,10 @@ public class ImageController {
         Image image = imageService.getImage(id);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
+        model.addAttribute("comments", image.getComments());
         return "images/image";
     }
+
 
     //This controller method is called when the request pattern is of type 'images/upload'
     //The method returns 'images/upload.html' file
@@ -99,6 +102,7 @@ public class ImageController {
         model.addAttribute("image", image);
         String tags = convertTagsToString(image.getTags());
         model.addAttribute("tags", tags);
+        model.addAttribute("comments", image.getComments());
         if(sessionUser.getId() == imgUserId) {
             return "images/edit";
         } else {
@@ -136,9 +140,10 @@ public class ImageController {
         updatedImage.setUser(user);
         updatedImage.setTags(imageTags);
         updatedImage.setDate(new Date());
+        updatedImage.setComments(image.getComments());
 
         imageService.updateImage(updatedImage);
-        return "redirect:/images/" + updatedImage.getTitle();
+        return "redirect:/images/" + updatedImage.getId()+"/"+ updatedImage.getTitle();
     }
 
 
@@ -157,6 +162,7 @@ public class ImageController {
             model.addAttribute("image", image);
             String tags = convertTagsToString(image.getTags());
             model.addAttribute("tags", tags);
+            model.addAttribute("comments", image.getComments());
             model.addAttribute("deleteError", "Only the owner of the image can delete the image");
             return "images/image";
         }
@@ -195,13 +201,15 @@ public class ImageController {
     private String convertTagsToString(List<Tag> tags) {
         StringBuilder tagString = new StringBuilder();
 
-        for (int i = 0; i <= tags.size() - 2; i++) {
-            tagString.append(tags.get(i).getName()).append(",");
+        if(tags.size()>0) {
+            for (int i = 0; i <= tags.size() - 2; i++) {
+                tagString.append(tags.get(i).getName()).append(",");
+            }
+            Tag lastTag = tags.get(tags.size() - 1);
+            tagString.append(lastTag.getName());
+            return tagString.toString();
         }
+        return null;
 
-        Tag lastTag = tags.get(tags.size() - 1);
-        tagString.append(lastTag.getName());
-
-        return tagString.toString();
     }
 }
